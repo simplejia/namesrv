@@ -1,8 +1,12 @@
 package model
 
+import (
+	"github.com/simplejia/namesrv/mongo"
+	mgo "gopkg.in/mgo.v2"
+)
+
 type Stat struct {
-	Name   string
-	NumDay int `json:"num_day,omitempty"`
+	Name string
 }
 
 func (stat *Stat) Regular() (ok bool) {
@@ -11,6 +15,25 @@ func (stat *Stat) Regular() (ok bool) {
 	}
 
 	ok = true
+	return
+}
+
+// Db 返回db name
+func (stat *Stat) Db() (db string) {
+	return "stat"
+}
+
+// Table 返回table name
+func (stat *Stat) Table() (table string) {
+	return "num_day"
+}
+
+// GetC 返回db col
+func (stat *Stat) GetC() (c *mgo.Collection) {
+	db, table := stat.Db(), stat.Table()
+	session := mongo.DBS[db]
+	sessionCopy := session.Copy()
+	c = sessionCopy.DB(db).C(table)
 	return
 }
 

@@ -1,13 +1,12 @@
 package model
 
-func (relation *Relation) Delete() (err error) {
+func (relation *Relation) Update() (err error) {
 	c := relation.GetC()
 	defer c.Database.Session.Close()
 
-	err = c.RemoveId(relation.Id)
+	err = c.UpdateId(relation.Id, relation)
 	if err != nil {
 		return
 	}
-
 	return
 }

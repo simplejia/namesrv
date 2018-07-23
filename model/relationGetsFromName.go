@@ -2,16 +2,11 @@ package model
 
 import (
 	"gopkg.in/mgo.v2/bson"
-
-	"github.com/simplejia/namesrv/mongo"
 )
 
 func (relation *Relation) GetsFromName() (rels []*Relation, err error) {
-	session := mongo.DBS["index"]
-	sessionCopy := session.Copy()
-	defer sessionCopy.Close()
-
-	c := sessionCopy.DB("index").C("relation")
+	c := relation.GetC()
+	defer c.Database.Session.Close()
 
 	q := bson.M{
 		"weight": bson.M{

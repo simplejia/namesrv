@@ -6,6 +6,8 @@ import (
 	"io"
 	"strings"
 
+	"github.com/simplejia/namesrv/mongo"
+	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -51,9 +53,28 @@ func (relation *Relation) Regular() (ok bool) {
 	return
 }
 
+// Db 返回db name
+func (relation *Relation) Db() (db string) {
+	return "index"
+}
+
+// Table 返回table name
+func (relation *Relation) Table() (table string) {
+	return "relation"
+}
+
 func NewRelation() *Relation {
 	rel := &Relation{}
 	return rel
+}
+
+// GetC 返回db col
+func (relation *Relation) GetC() (c *mgo.Collection) {
+	db, table := relation.Db(), relation.Table()
+	session := mongo.DBS[db]
+	sessionCopy := session.Copy()
+	c = sessionCopy.DB(db).C(table)
+	return
 }
 
 type Relations []*Relation

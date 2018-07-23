@@ -5,8 +5,8 @@ package main
 import "net/http"
 import "time"
 import "github.com/simplejia/namesrv/controller/admin"
-import "github.com/simplejia/namesrv/filter"
 import "github.com/simplejia/namesrv/controller"
+import "github.com/simplejia/namesrv/filter"
 
 func init() {
 	http.HandleFunc("/admin/relation/create", func(w http.ResponseWriter, r *http.Request) {
@@ -37,18 +37,46 @@ func init() {
 		c.Delete(w, r)
 	})
 
-	http.HandleFunc("/conf/get", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/admin/relation/list", func(w http.ResponseWriter, r *http.Request) {
 		t := time.Now()
 		_ = t
 		var e interface{}
-		c := new(controller.Conf)
+		c := new(admin.Relation)
 		defer func() {
 			e = recover()
-			if ok := filter.Boss(w, r, map[string]interface{}{"__T__": t, "__C__": c, "__E__": e, "__P__": "/conf/get"}); !ok {
+			if ok := filter.Boss(w, r, map[string]interface{}{"__T__": t, "__C__": c, "__E__": e, "__P__": "/admin/relation/list"}); !ok {
 				return
 			}
 		}()
-		c.Get(w, r)
+		c.List(w, r)
+	})
+
+	http.HandleFunc("/admin/relation/update", func(w http.ResponseWriter, r *http.Request) {
+		t := time.Now()
+		_ = t
+		var e interface{}
+		c := new(admin.Relation)
+		defer func() {
+			e = recover()
+			if ok := filter.Boss(w, r, map[string]interface{}{"__T__": t, "__C__": c, "__E__": e, "__P__": "/admin/relation/update"}); !ok {
+				return
+			}
+		}()
+		c.Update(w, r)
+	})
+
+	http.HandleFunc("/admin/stat/list", func(w http.ResponseWriter, r *http.Request) {
+		t := time.Now()
+		_ = t
+		var e interface{}
+		c := new(admin.Stat)
+		defer func() {
+			e = recover()
+			if ok := filter.Boss(w, r, map[string]interface{}{"__T__": t, "__C__": c, "__E__": e, "__P__": "/admin/stat/list"}); !ok {
+				return
+			}
+		}()
+		c.List(w, r)
 	})
 
 	http.HandleFunc("/relation/getsFromIp", func(w http.ResponseWriter, r *http.Request) {

@@ -5,16 +5,11 @@ import (
 	"time"
 
 	"gopkg.in/mgo.v2/bson"
-
-	"github.com/simplejia/namesrv/mongo"
 )
 
 func (stat *Stat) IncNumDay(num int) (err error) {
-	session := mongo.DBS["index"]
-	sessionCopy := session.Copy()
-	defer sessionCopy.Close()
-
-	c := sessionCopy.DB("stat").C("num_day")
+	c := stat.GetC()
+	defer c.Database.Session.Close()
 
 	sel := bson.M{
 		"name": stat.Name,

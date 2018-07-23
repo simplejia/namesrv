@@ -1,59 +1,32 @@
+/*
+Package mongo 用于mongo连接定义，所有mongo db配置需在此目录定义，一个db对应一个文件。
+*/
 package mongo
 
 import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
-	mgo "gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2"
 
 	"github.com/simplejia/namesrv/conf"
 	"github.com/simplejia/utils"
 )
 
+// Conf 用于mongo连接配置
 type Conf struct {
-	ConnMaxLifetime string
-	MaxIdleConns    int
-	MaxOpenConns    int
-	Dsn             string
+	Dsn string // 连接串: mongo://127.0.0.1:27017...
 }
 
 var (
-	DBS  map[string]*mgo.Session = map[string]*mgo.Session{}
-	Envs map[string]*Conf
-	Env  string
-	C    *Conf
+	// DBS 表示mongo连接，key是db名，value是db连接
+	DBS map[string]*mgo.Session = map[string]*mgo.Session{}
 )
-
-func parseDBFile(path string) {
-	fcontent, err := ioutil.ReadFile(path)
-	if err != nil {
-		panic(err)
-	}
-	fcontent = utils.RemoveAnnotation(fcontent)
-	if err := json.Unmarshal(fcontent, &Envs); err != nil {
-		panic(err)
-	}
-
-	Env = conf.Env
-	C = Envs[Env]
-	if C == nil {
-		fmt.Println("env not right:", Env)
-		os.Exit(-1)
-	}
-
-	session, err := mgo.Dial(C.Dsn)
-	if err != nil {
-		panic(err)
-	}
-	session.SetMode(mgo.SecondaryPreferred, true)
-
-	key := strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))
-	DBS[key] = session
-}
 
 func init() {
 	dir := "mongo"
@@ -73,15 +46,47 @@ func init() {
 			if info.IsDir() {
 				return
 			}
+			if strings.HasPrefix(filepath.Base(path), ".") {
+				return
+			}
 			if filepath.Ext(path) != ".json" {
 				return
 			}
 
-			parseDBFile(path)
+			fcontent, err := ioutil.ReadFile(path)
+			if err != nil {
+				reterr = err
+				return
+			}
+			fcontent = utils.RemoveAnnotation(fcontent)
+			var envs map[string]*Conf
+			if err := json.Unmarshal(fcontent, &envs); err != nil {
+				reterr = err
+				return
+			}
+
+			c := envs[conf.Env]
+			if c == nil {
+				reterr = fmt.Errorf("env not right: %s", conf.Env)
+				return
+			}
+
+			session, err := mgo.Dial(c.Dsn)
+			if err != nil {
+				reterr = err
+				return
+			}
+			session.SetMode(mgo.SecondaryPreferred, true)
+
+			key := strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))
+			DBS[key] = session
 			return
 		},
 	)
 	if err != nil {
-		panic(err)
+		log.Printf("conf(mongo) not right: %v\n", err)
+		os.Exit(-1)
 	}
+
+	log.Printf("conf(mongo): %v\n", DBS)
 }

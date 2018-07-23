@@ -7,18 +7,13 @@ import (
 	"gopkg.in/mgo.v2/bson"
 
 	"github.com/simplejia/clog"
-	"github.com/simplejia/namesrv/mongo"
 )
 
 func (stat *Stat) CleanNumDay() (err error) {
-	session := mongo.DBS["index"]
-	sessionCopy := session.Copy()
-	defer sessionCopy.Close()
+	c := stat.GetC()
+	defer c.Database.Session.Close()
 
-	c := sessionCopy.DB("stat").C("num_day")
-
-	now := time.Now()
-	day := now.Add(time.Hour * 24).Day()
+	day := time.Now().Add(time.Hour * 24).Day()
 	field := fmt.Sprintf("num_day_%d", day)
 	sel := bson.M{
 		field: bson.M{

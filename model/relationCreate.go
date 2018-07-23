@@ -1,13 +1,8 @@
 package model
 
-import "github.com/simplejia/namesrv/mongo"
-
 func (relation *Relation) Create() (err error) {
-	session := mongo.DBS["index"]
-	sessionCopy := session.Copy()
-	defer sessionCopy.Close()
-
-	c := sessionCopy.DB("index").C("relation")
+	c := relation.GetC()
+	defer c.Database.Session.Close()
 
 	err = c.Insert(relation)
 	if err != nil {

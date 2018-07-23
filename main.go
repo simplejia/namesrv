@@ -13,7 +13,6 @@ import (
 	"github.com/simplejia/lc"
 	"github.com/simplejia/namecli/api"
 	"github.com/simplejia/namesrv/conf"
-	_ "github.com/simplejia/namesrv/mongo"
 	"github.com/simplejia/utils"
 
 	"net/http"
@@ -32,12 +31,12 @@ func init() {
 }
 
 func main() {
+	fun := "main"
 	clog.Info("main()")
 
-	c := conf.Get()
-	addr := fmt.Sprintf("%s:%d", "0.0.0.0", c.App.Port)
+	addr := fmt.Sprintf("%s:%d", "0.0.0.0", conf.C.App.Port)
 	err := utils.ListenAndServe(addr, nil)
 	if err != nil {
-		clog.Error("main() err: %v", err)
+		clog.Error("%s err: %v, addr: %v", fun, err, addr)
 	}
 }
