@@ -1,8 +1,8 @@
 package model
 
 import (
+	mgo "github.com/globalsign/mgo"
 	"github.com/simplejia/namesrv/mongo"
-	mgo "gopkg.in/mgo.v2"
 )
 
 type Stat struct {

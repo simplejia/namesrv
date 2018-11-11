@@ -6,9 +6,9 @@ import (
 	"io"
 	"strings"
 
+	mgo "github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
 	"github.com/simplejia/namesrv/mongo"
-	mgo "gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type Relation struct {
