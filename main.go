@@ -22,8 +22,9 @@ func init() {
 	lc.Init(1e5)
 
 	clog.AddrFunc = func() (string, error) {
-		return api.Name("clog.srv.ns")
+		return api.Name(conf.C.Addrs.Clog)
 	}
+	clog.Init(conf.C.App.Name, "", conf.C.Clog.Level, conf.C.Clog.Mode)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
