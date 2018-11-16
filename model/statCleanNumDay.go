@@ -6,7 +6,7 @@ import (
 
 	"github.com/globalsign/mgo/bson"
 
-	"github.com/simplejia/clog"
+	"github.com/simplejia/clog/api"
 )
 
 func (stat *Stat) CleanNumDay() (err error) {

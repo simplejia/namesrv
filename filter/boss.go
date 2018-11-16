@@ -5,7 +5,7 @@ import (
 	"runtime/debug"
 	"time"
 
-	"github.com/simplejia/clog"
+	"github.com/simplejia/clog/api"
 )
 
 func Boss(w http.ResponseWriter, r *http.Request, m map[string]interface{}) bool {

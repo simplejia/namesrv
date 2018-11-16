@@ -9,7 +9,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/simplejia/clog"
+	"github.com/simplejia/clog/api"
 	"github.com/simplejia/lc"
 	"github.com/simplejia/namecli/api"
 	"github.com/simplejia/namesrv/conf"
