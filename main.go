@@ -9,9 +9,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/simplejia/clog/api"
+	clog "github.com/simplejia/clog/api"
 	"github.com/simplejia/lc"
-	"github.com/simplejia/namecli/api"
 	"github.com/simplejia/namesrv/conf"
 	"github.com/simplejia/utils"
 
@@ -21,10 +20,7 @@ import (
 func init() {
 	lc.Init(1e5)
 
-	clog.AddrFunc = func() (string, error) {
-		return api.Name(conf.C.Addrs.Clog)
-	}
-	clog.Init(conf.C.App.Name, "", conf.C.Clog.Level, conf.C.Clog.Mode)
+	clog.Init(conf.C.App.Name, "", conf.C.Clog.Level, 1)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)

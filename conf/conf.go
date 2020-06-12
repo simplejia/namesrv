@@ -23,12 +23,7 @@ type Conf struct {
 	}
 	// clog日志输出配置
 	Clog *struct {
-		Mode  int
 		Level int
-	}
-	// 各种名字或addr配置
-	Addrs *struct {
-		Clog string
 	}
 }
 
